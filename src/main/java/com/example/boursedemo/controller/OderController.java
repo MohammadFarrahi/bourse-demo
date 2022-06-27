@@ -22,8 +22,7 @@ public class OderController {
     public Response postOrder(@RequestBody OrderDTO newOrderDTO) {
         try {
             var tradeResponse = orderDomainManager.addOrder(newOrderDTO);
-            var responseMessage = tradeResponse == null ? "Order Added" : "Oder was Traded";
-            return new Response(true, responseMessage, tradeResponse);
+            return new Response(true, "successful", tradeResponse);
         }
         catch(InvalidPayloadException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "BadPostPayload");

@@ -1,13 +1,22 @@
 package com.example.boursedemo.model.DTO;
 
 public class TradeDTO {
-    Double orderPrice;
+    Double price;
+    Integer tradeQuantity = 0;
 
-    public Double getOrderPrice() {
-        return orderPrice;
+    public Integer getTradeQuantity() {
+        return tradeQuantity;
     }
 
-    public void setOrderPrice(Double orderPrice) {
-        this.orderPrice = orderPrice;
+    public void setTradeQuantity(Integer tradeQuantity) {
+        this.tradeQuantity = tradeQuantity;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

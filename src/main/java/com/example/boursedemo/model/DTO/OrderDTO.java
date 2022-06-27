@@ -4,6 +4,14 @@ public class OrderDTO {
     private Integer id;
     private String side;
     private Double price;
+    private Integer quantity;
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 
     public Integer getId() {
         return id;
@@ -29,7 +37,7 @@ public class OrderDTO {
         this.price = price;
     }
     public boolean checkNullability() {
-        if(this.price == null || this.side == null)
+        if(this.price == null || this.side == null || this.quantity == null)
             return true;
         return false;
     }

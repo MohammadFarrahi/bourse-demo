@@ -19,7 +19,7 @@ public class OrderDomainManager {
         if(!validateOrderDTO(orderInfo))
             throw new InvalidPayloadException("InvalidPriceJSON");
         var orderSide = Order.SIDE.valueOf(orderInfo.getSide());
-        var newOrder = new Order(lastId++, orderSide, orderInfo.getPrice());
+        var newOrder = new Order(lastId++, orderSide, orderInfo.getPrice(), orderInfo.getQuantity());
 
         if (Order.SIDE.buy.equals(orderSide)) {
             buyOrders.add(newOrder);
@@ -31,14 +31,17 @@ public class OrderDomainManager {
     }
     private TradeDTO tryTrade(ArrayList<Order> fromSideOrders, ArrayList<Order> toSideOrders, int fromSideIndex) {
         var fromOder = fromSideOrders.get(fromSideIndex);
-        for(var order : toSideOrders) {
-            if(order.isPriceEquals(fromOder)) {
-                toSideOrders.remove(order);
-                fromSideOrders.remove(fromOder);
-                return fromOder.getTradeDTO();
+
+        for(int toSideIndex = 0; toSideIndex < toSideOrders.size(); toSideIndex++) {
+            toSideOrders.get(toSideIndex).tryTrade(fromOder);
+            if(toSideOrders.get(toSideIndex).isFullyTraded()) {
+                toSideOrders.remove(toSideIndex); toSideIndex--;
+            }
+            if(fromOder.isFullyTraded()) {
+                fromSideOrders.remove(fromOder); break;
             }
         }
-        return null;
+        return fromOder.getTradeDTO();
     }
     public List<OrderDTO> getOrderBook() {
         ArrayList<OrderDTO> response = new ArrayList<>();
@@ -55,6 +58,7 @@ public class OrderDomainManager {
         isValid &= !orderDTO.checkNullability();
         isValid &= orderDTO.getSide().equals(Order.SIDE.buy.toString()) | orderDTO.getSide().equals(Order.SIDE.sell.toString());
         isValid &= orderDTO.getPrice() > 0;
+        isValid &= orderDTO.getQuantity() > 0;
         return isValid;
     }
 }
