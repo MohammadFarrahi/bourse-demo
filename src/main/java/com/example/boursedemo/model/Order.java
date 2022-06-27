@@ -28,6 +28,7 @@ public class Order {
     }
 
     public Integer tryTrade(Order other) {
+        if (this.orderPrice != other.orderPrice) return 0;
         var quantity = Math.min(this.orderQuantity - this.tradedShareQuantity, other.orderQuantity - other.tradedShareQuantity);
 
         this.tradedShareQuantity += quantity;
