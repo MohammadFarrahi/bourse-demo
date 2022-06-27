@@ -3,11 +3,9 @@ package com.example.boursedemo.model;
 import com.example.boursedemo.model.DTO.OrderDTO;
 import com.example.boursedemo.model.DTO.TradeDTO;
 
-import java.util.List;
-
 public class Order {
     public static enum SIDE {
-        BUY, SELL;
+        buy, sell;
     }
     private Integer id;
     private SIDE orderSide;
@@ -30,8 +28,8 @@ public class Order {
     public OrderDTO getOrderDTO() {
         var newDTO = new OrderDTO();
         newDTO.setId(this.id);
-        newDTO.setOrderSide(this.orderSide.toString());
-        newDTO.setOrderPrice(this.orderPrice);
+        newDTO.setSide(this.orderSide.toString());
+        newDTO.setPrice(this.orderPrice);
         return newDTO;
     }
 }

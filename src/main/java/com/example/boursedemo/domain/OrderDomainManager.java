@@ -1,5 +1,6 @@
 package com.example.boursedemo.domain;
 
+import com.example.boursedemo.exception.InvalidPayloadException;
 import com.example.boursedemo.model.DTO.OrderDTO;
 import com.example.boursedemo.model.DTO.TradeDTO;
 import com.example.boursedemo.model.Order;
@@ -11,16 +12,16 @@ import java.util.List;
 @Component
 public class OrderDomainManager {
     private static Integer lastId = 0;
-    private ArrayList<Order> sellOrders;
-    private ArrayList<Order> buyOrders;
+    private ArrayList<Order> sellOrders = new ArrayList<>();
+    private ArrayList<Order> buyOrders = new ArrayList<>();
 
-    public TradeDTO addOrder(OrderDTO orderInfo) {
-        //TODO : handle if it is non of these.
-        var orderSide = Order.SIDE.valueOf(orderInfo.getOrderSide());
-        var newOrder = new Order(lastId++, orderSide, orderInfo.getOrderPrice());
+    public TradeDTO addOrder(OrderDTO orderInfo) throws InvalidPayloadException {
+        if(!validateOrderDTO(orderInfo))
+            throw new InvalidPayloadException("InvalidPriceJSON");
+        var orderSide = Order.SIDE.valueOf(orderInfo.getSide());
+        var newOrder = new Order(lastId++, orderSide, orderInfo.getPrice());
 
-
-        if (Order.SIDE.BUY.equals(orderSide)) {
+        if (Order.SIDE.buy.equals(orderSide)) {
             buyOrders.add(newOrder);
             return tryTrade(buyOrders, sellOrders, buyOrders.size() - 1);
         } else {
@@ -48,5 +49,12 @@ public class OrderDomainManager {
             response.add(order.getOrderDTO());
         }
         return response;
+    }
+    private boolean validateOrderDTO(OrderDTO orderDTO) {
+        boolean isValid = true;
+        isValid &= !orderDTO.checkNullability();
+        isValid &= orderDTO.getSide().equals(Order.SIDE.buy.toString()) | orderDTO.getSide().equals(Order.SIDE.sell.toString());
+        isValid &= orderDTO.getPrice() > 0;
+        return isValid;
     }
 }

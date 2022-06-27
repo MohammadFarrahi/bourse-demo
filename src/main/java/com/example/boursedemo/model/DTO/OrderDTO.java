@@ -2,8 +2,8 @@ package com.example.boursedemo.model.DTO;
 
 public class OrderDTO {
     private Integer id;
-    private String orderSide;
-    private Double orderPrice;
+    private String side;
+    private Double price;
 
     public Integer getId() {
         return id;
@@ -13,23 +13,23 @@ public class OrderDTO {
         this.id = id;
     }
 
-    public String getOrderSide() {
-        return orderSide;
+    public String getSide() {
+        return side;
     }
 
-    public void setOrderSide(String orderSide) {
-        this.orderSide = orderSide;
+    public void setSide(String side) {
+        this.side = side;
     }
 
-    public Double getOrderPrice() {
-        return orderPrice;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setOrderPrice(Double orderPrice) {
-        this.orderPrice = orderPrice;
+    public void setPrice(Double price) {
+        this.price = price;
     }
     public boolean checkNullability() {
-        if(this.orderPrice == null || this.orderSide == null)
+        if(this.price == null || this.side == null)
             return true;
         return false;
     }
