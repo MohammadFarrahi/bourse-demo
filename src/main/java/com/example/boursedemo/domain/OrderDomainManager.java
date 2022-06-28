@@ -1,9 +1,11 @@
 package com.example.boursedemo.domain;
 
 import com.example.boursedemo.exception.InvalidPayloadException;
+import com.example.boursedemo.kafka.KafkaOrderProducer;
 import com.example.boursedemo.model.DTO.OrderDTO;
 import com.example.boursedemo.model.DTO.TradeDTO;
 import com.example.boursedemo.model.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ public class OrderDomainManager {
     private static Integer lastId = 0;
     private ArrayList<Order> sellOrders = new ArrayList<>();
     private ArrayList<Order> buyOrders = new ArrayList<>();
+    @Autowired
+    KafkaOrderProducer orderProducer;
 
     public TradeDTO addOrder(OrderDTO orderInfo) throws InvalidPayloadException {
         if(!validateOrderDTO(orderInfo))
@@ -23,6 +27,7 @@ public class OrderDomainManager {
         var orderSide = Order.SIDE.valueOf(orderInfo.getSide());
         var newOrder = new Order(lastId++, orderSide, orderInfo.getPrice(), orderInfo.getQuantity());
 
+        orderProducer.SendToTopic(newOrder.getOrderDTO());
         if (Order.SIDE.buy.equals(orderSide)) {
             buyOrders.add(newOrder);
             return tryTrade(buyOrders, sellOrders, buyOrders.size() - 1);
