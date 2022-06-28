@@ -3,6 +3,8 @@ package com.example.boursedemo.model;
 import com.example.boursedemo.model.DTO.OrderDTO;
 import com.example.boursedemo.model.DTO.TradeDTO;
 
+import java.util.Comparator;
+
 public class Order {
     public static enum SIDE {
         buy, sell;
@@ -53,5 +55,12 @@ public class Order {
         newDTO.setPrice(this.orderPrice);
         newDTO.setQuantity(this.orderQuantity - this.tradedShareQuantity);
         return newDTO;
+    }
+    public static Comparator<OrderDTO> getDescendingPriceComparator() {
+        return (OrderDTO o1, OrderDTO o2) -> (int) Math.round((o2.getPrice() - o1.getPrice())*10);
+
+    }
+    public static Comparator<OrderDTO> getAscendingPriceComparator() {
+        return (OrderDTO o1, OrderDTO o2) -> (int) Math.round((o1.getPrice() - o2.getPrice())*10);
     }
 }

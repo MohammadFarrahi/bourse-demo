@@ -30,7 +30,8 @@ public class OderController {
 
     }
     @RequestMapping(value = "/orders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response getOrders() {
+    public Response getOrders(@RequestParam(defaultValue = "all") String type) {
+//        var ordersDTO = orderDomainManager.getOrderBook(type);
         var ordersDTO = orderDomainManager.getOrderBook();
         return new Response(true, "successful", ordersDTO);
     }

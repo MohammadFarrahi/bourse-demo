@@ -7,6 +7,8 @@ import com.example.boursedemo.model.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -43,6 +45,27 @@ public class OrderDomainManager {
         }
         return fromOder.getTradeDTO();
     }
+    public List<OrderDTO> getOrderBook(String type) {
+        ArrayList<OrderDTO> response = new ArrayList<>();
+        ArrayList<OrderDTO> buyOrdersDTO = new ArrayList<>();
+        ArrayList<OrderDTO> sellOrdersDTO = new ArrayList<>();
+        if(type.equals(Order.SIDE.buy.toString()) || type.equals("all")) {
+            for(var order : this.buyOrders) {
+                buyOrdersDTO.add(order.getOrderDTO());
+            }
+            Collections.sort(buyOrdersDTO, Order.getDescendingPriceComparator());
+            response.addAll(buyOrdersDTO);
+        }
+        if(type.equals(Order.SIDE.sell.toString()) || type.equals("all")){
+            for(var order : this.sellOrders) {
+                sellOrdersDTO.add(order.getOrderDTO());
+            }
+            Collections.sort(sellOrdersDTO, Order.getAscendingPriceComparator());
+            response.addAll(sellOrdersDTO);
+        }
+        return response;
+    }
+
     public List<OrderDTO> getOrderBook() {
         ArrayList<OrderDTO> response = new ArrayList<>();
         for(var order : this.buyOrders) {
@@ -53,6 +76,7 @@ public class OrderDomainManager {
         }
         return response;
     }
+
     private boolean validateOrderDTO(OrderDTO orderDTO) {
         boolean isValid = true;
         isValid &= !orderDTO.checkNullability();
